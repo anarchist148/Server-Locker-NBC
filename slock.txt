@@ -1,0 +1,181 @@
+local lp = game.Players.LocalPlayer
+local takepads = true
+
+local Admin = game:GetService("Workspace").Terrain["_Game"].Admin
+local Pads = Admin.Pads
+
+local serverlock = false
+
+local function noti(Title, Text)
+    game:GetService("StarterGui"):SetCore(
+        "SendNotification",
+        {
+            Title = Title,
+            Text = Text
+        }
+    )
+end
+
+local function chat(msg)
+    game:GetService "Players":Chat(msg)
+end
+
+lp.Chatted:Connect(
+    function(msg)
+        if msg == _G.prefix .. "slock" then
+            local Padcheck = false
+            local Regencheck = false
+
+            for _, v in pairs(Pads:GetChildren()) do
+                if v:FindFirstChild("Head") then
+                    Padcheck = true
+                end
+            end
+
+            if Admin:FindFirstChild("Regen") then
+                if Admin.Regen.CFrame.Y < 500 then
+                    Regencheck = true
+                end
+            end
+
+            if Regencheck == false then
+                noti("Regen?", "Regen has been Removed!")
+            end
+            if Padcheck == false then
+                noti("Pads?", "Pads have been Removed!")
+            end
+
+            local regen = Admin:FindFirstChild("Regen")
+
+            fireclickdetector(regen.ClickDetector, 0)
+            wait(.12)
+            for i, v in pairs(Pads:GetChildren()) do
+                coroutine.wrap(
+                    function()
+                        while takepads do
+                            spawn(
+                                function()
+                                    firetouchinterest(lp.Character:WaitForChild("Head"), v.Head, 0)
+                                    firetouchinterest(lp.Character:WaitForChild("Head"), v.Head, 1)
+                                end
+                            )
+                            wait(.00000001)
+                        end
+                    end
+                )()
+            end
+
+            repeat
+                wait()
+
+                repeat
+                    wait()
+                until lp.Character and lp.Character:FindFirstChild("Humanoid")
+                local cf = lp.Character:FindFirstChild("HumanoidRootPart")
+                local looping = true
+                spawn(
+                    function()
+                        while true do
+                            game:GetService("RunService").Heartbeat:Wait()
+                            lp.Character["Humanoid"]:ChangeState(11)
+                            cf.CFrame =
+                                regen.CFrame *
+                                CFrame.new(-1 * (regen.Size.X / 2) - (lp.Character["Torso"].Size.X / 2), 0, 0)
+                            if not looping then
+                                break
+                            end
+                        end
+                    end
+                )
+                spawn(
+                    function()
+                        while looping do
+                            wait(.1)
+                            chat("unpunish me")
+                        end
+                    end
+                )
+                wait(0.3)
+                looping = false
+                chat("skydive me")
+                wait(0.3)
+                chat("unskydive me")
+                wait(.3)
+                chat("respawn me")
+                wait(0.2)
+            until regen.CFrame.Y < 5
+
+            lp.Character.HumanoidRootPart.CFrame = CFrame.new(-29, 8, 74)
+
+            chat("respawn others")
+            wait(.1)
+            chat("blind others")
+            chat("punish others")
+            chat(
+                "pm others This Server Has Been Compromised By " ..
+                    lp.Name .. ", Please Join a New Server If You Wish To Use Admin Commands."
+            )
+            noti("Server Locked!", "Server Has Now Been Locked.")
+            serverlock = true
+
+            game.Players.PlayerAdded:Connect(
+                function(plr)
+                    if serverlock then
+                        for i = 1, #_G.whitelist do
+                            if plr.Name == _G.whitelist[i] then
+                                wl = plr.Name
+                                noti("Whitelisted Player!", plr.Name .. " Is Whitelisted!")
+                                chat("m Whitelisted Player, " .. plr.Name .. " Has Joined The Game!")
+                                chat("tp " .. plr.Name .. " me")
+                                chat(_G.prefix .. "res")
+                            end
+                        end
+                        repeat
+                            wait()
+                        until plr.Character
+                        if plr.Name ~= wl then
+                            chat(
+                                "pm " ..
+                                    plr.Name ..
+                                        " Welcome, " ..
+                                            plr.Name ..
+                                                ". This Server Has Been Compromised By " ..
+                                                    lp.Name ..
+                                                        ", Please Join a New Server If You Wish To Use Admin Commands."
+                            )
+                            chat("blind " .. plr.Name)
+                            chat("punish " .. plr.Name)
+                        end
+                    end
+                end
+            )
+        end
+
+        if msg == _G.prefix .. "unslock" then
+            if serverlock == true then
+                serverlock = false
+                chat("respawn others")
+                noti("Server Unlocked!", "Server Has Now Been Unlocked!")
+            else
+                noti("Dumbass", "You need to lock the server first")
+            end
+        end
+
+        if msg == _G.prefix .. "res" then
+            takepads = false
+            wait(.13)
+            fireclickdetector(Admin.Regen.ClickDetector, 0)
+            wait(.12)
+            local pad = Pads:FindFirstChild("Touch to get admin")
+            firetouchinterest(lp.Character:WaitForChild("Head"), pad.Head, 0)
+            firetouchinterest(lp.Character:WaitForChild("Head"), pad.Head, 1)
+            wait(.12)
+            pad:GetPropertyChangedSignal("Name"):Connect(
+                function()
+                    firetouchinterest(lp.Character:WaitForChild("Head"), pad.Head, 0)
+                    firetouchinterest(lp.Character:WaitForChild("Head"), pad.Head, 1)
+                end
+            )
+        end
+    end
+)
