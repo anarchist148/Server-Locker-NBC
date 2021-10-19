@@ -145,6 +145,11 @@ lp.Chatted:Connect(
                             )
                             chat("blind " .. plr.Name)
                             chat("punish " .. plr.Name)
+                            plr.CharacterAdded:Connect(function()
+                            chat("punish "..plr.Name)
+                            chat("blind "..plr.Name)
+                            chat("pm "..plr.Name.." Even Exploiting Won't Help You This Time.")
+                           end)
                         end
                     end
                 end
