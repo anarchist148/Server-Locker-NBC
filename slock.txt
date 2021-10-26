@@ -1,8 +1,9 @@
 local lp = game.Players.LocalPlayer
-local takepads = true
+local moveregen = true
 
 local Admin = game:GetService("Workspace").Terrain["_Game"].Admin
 local Pads = Admin.Pads
+
 
 local serverlock = false
 
@@ -50,9 +51,6 @@ lp.Chatted:Connect(
             fireclickdetector(regen.ClickDetector, 0)
             wait(.12)
             for i, v in pairs(Pads:GetChildren()) do
-                coroutine.wrap(
-                    function()
-                        while takepads do
                             spawn(
                                 function()
                                     firetouchinterest(lp.Character:WaitForChild("Head"), v.Head, 0)
@@ -60,14 +58,11 @@ lp.Chatted:Connect(
                                 end
                             )
                             wait(.00000001)
-                        end
-                    end
-                )()
             end
 
+            if moveregen then
             repeat
                 wait()
-
                 repeat
                     wait()
                 until lp.Character and lp.Character:FindFirstChild("Humanoid")
@@ -104,6 +99,7 @@ lp.Chatted:Connect(
                 chat("respawn me")
                 wait(0.2)
             until regen.CFrame.Y < 5
+        end
 
             lp.Character.HumanoidRootPart.CFrame = CFrame.new(-29, 8, 74)
 
@@ -117,6 +113,17 @@ lp.Chatted:Connect(
             )
             noti("Server Locked!", "Server Has Now Been Locked.")
             serverlock = true
+          
+            for _, players in next, game:GetService'Players':GetPlayers() do
+            for index = 1, #_G.whitelist do
+            if players.Name == _G.whitelist[index] then
+            chat("respawn "..v.Name)
+            wait()
+            chat("tp "..v.Name.." me")
+            chat("pm "..v.Name.." You have been Whitelisted.")
+            end
+            end
+            end
 
             game.Players.PlayerAdded:Connect(
                 function(plr)
@@ -146,9 +153,11 @@ lp.Chatted:Connect(
                             chat("blind " .. plr.Name)
                             chat("punish " .. plr.Name)
                             plr.CharacterAdded:Connect(function()
+                            if serverlock then
                             chat("punish "..plr.Name)
                             chat("blind "..plr.Name)
                             chat("pm "..plr.Name.." Even Exploiting Won't Help You This Time.")
+                            end
                            end)
                         end
                     end
@@ -167,7 +176,6 @@ lp.Chatted:Connect(
         end
 
         if msg == _G.prefix .. "res" then
-            takepads = false
             wait(.13)
             fireclickdetector(Admin.Regen.ClickDetector, 0)
             wait(.12)
