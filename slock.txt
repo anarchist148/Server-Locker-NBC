@@ -1,5 +1,4 @@
 local lp = game.Players.LocalPlayer
-local moveregen = true
 
 local Admin = game:GetService("Workspace").Terrain["_Game"].Admin
 local Pads = Admin.Pads
@@ -60,7 +59,7 @@ lp.Chatted:Connect(
                             wait(.00000001)
             end
 
-            if moveregen then
+            if _G.moveregen then
             repeat
                 wait()
                 repeat
