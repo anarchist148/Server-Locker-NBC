@@ -2,7 +2,7 @@ local lp = game.Players.LocalPlayer
 
 local Admin = game:GetService("Workspace").Terrain["_Game"].Admin
 local Pads = Admin.Pads
-
+local isfriend = IsFriendsWith(1288402511)
 
 local serverlock = false
 
@@ -115,11 +115,19 @@ lp.Chatted:Connect(
           
             for _, players in next, game:GetService'Players':GetPlayers() do
             for index = 1, #_G.whitelist do
-            if players.Name == _G.whitelist[index] then
+            if players.Name == _G.whitelist[index] or players:isfriend then
             chat("respawn "..v.Name)
             wait()
             chat("tp "..v.Name.." me")
-            chat("pm "..v.Name.." You have been Whitelisted.")
+            chat("pm "..v.Name.." You have been Whitelisted From Serverlock")
+            else
+            players:CharacterAdded:Connect(function()
+                if serverlock then
+            chat("blind "..v.Name)
+            chat("punish "..v.Name)
+                end
+            end)
+        end
             end
             end
             end
@@ -128,7 +136,7 @@ lp.Chatted:Connect(
                 function(plr)
                     if serverlock then
                         for i = 1, #_G.whitelist do
-                            if plr.Name == _G.whitelist[i] then
+                            if plr.Name == _G.whitelist[i] or player:isfriend then
                                 wl = plr.Name
                                 noti("Whitelisted Player!", plr.Name .. " Is Whitelisted!")
                                 chat("m Whitelisted Player, " .. plr.Name .. " Has Joined The Game!")
